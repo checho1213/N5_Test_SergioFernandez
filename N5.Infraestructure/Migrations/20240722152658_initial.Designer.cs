@@ -12,8 +12,8 @@ using N5.Infraestructure.context;
 namespace N5.Infraestructure.Migrations
 {
     [DbContext(typeof(N5Context))]
-    [Migration("20240720114323_AddProperty")]
-    partial class AddProperty
+    [Migration("20240722152658_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

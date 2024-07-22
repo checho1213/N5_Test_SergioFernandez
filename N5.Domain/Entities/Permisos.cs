@@ -19,5 +19,7 @@ namespace N5.Domain.Entities
         public DateOnly FechaPermiso { get; set; }
 
         public TiposPermisos TiposPermiso { get; set; }
+
+        public int TiposPermisoId { get; set; }
     }
 }

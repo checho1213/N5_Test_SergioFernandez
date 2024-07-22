@@ -1,6 +1,8 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using N5.Domain.Entities;
 using N5.Infraestructure.Interfaces;
+using N5.WebApi.Application.Commands.Permissions;
 
 namespace N5.WebApi.Controllers
 {
@@ -14,18 +16,25 @@ namespace N5.WebApi.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-        private readonly IUnitofWork unitofWork;
+        private readonly IMediator _mediator;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IUnitofWork unitofWork)
+
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMediator mediator)
         {
             _logger = logger;
-            this.unitofWork = unitofWork;
+            this._mediator = mediator;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<Permisos> Get()
+        public async Task<ActionResult> Get()
         {
-           return unitofWork.PermisosRepository.GetAll();
+            return StatusCode(StatusCodes.Status201Created, await _mediator.Send(new CreatePermissionCommand { 
+             EmployeeName = "sergio",
+              EmployeeSurname = "fernandez",
+               PermissionDate =  DateTime.Now,
+                PermissionType =  1
+            }));
+           
         }
     }
 }
