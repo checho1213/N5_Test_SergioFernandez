@@ -1,16 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using N5.Domain.Entities;
-
-namespace N5.Infraestructure.context
+﻿namespace N5.Infraestructure.context;
+public class N5Context : DbContext
 {
-    public class N5Context : DbContext
+    public N5Context(DbContextOptions<N5Context> options):base(options)
     {
-        public N5Context(DbContextOptions<N5Context> options):base(options)
-        {
-            
-        }
-
-        public DbSet<Permisos>Permisos { get; set; }
-        public DbSet<TiposPermisos> TiposPermisos { get; set; }
+        
     }
+    public DbSet<Permisos>Permisos { get; set; }
+    public DbSet<TiposPermisos> TiposPermisos { get; set; }
 }

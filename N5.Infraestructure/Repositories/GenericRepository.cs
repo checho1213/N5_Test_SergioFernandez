@@ -1,8 +1,4 @@
-﻿using N5.Infraestructure.context;
-using N5.Infraestructure.Interfaces;
-using System.Linq.Expressions;
-
-namespace N5.Infraestructure.Repositories;
+﻿namespace N5.Infraestructure.Repositories;
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     protected readonly N5Context context;

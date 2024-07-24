@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-namespace N5.Infraestructure.Interfaces;
+﻿namespace N5.Infraestructure.Interfaces;
 public interface IGenericRepository<T> where T : class
 {
     T GetById(int id);

@@ -1,7 +1,4 @@
-﻿using N5.Infraestructure.context;
-using N5.Infraestructure.Interfaces;
-
-namespace N5.Infraestructure.Repositories;
+﻿namespace N5.Infraestructure.Repositories;
 public class UnitOfWork : IUnitofWork
 {
     private N5Context context;
