@@ -1,4 +1,7 @@
-﻿namespace N5.Infraestructure.Repositories;
+﻿using Confluent.Kafka.Admin;
+using Confluent.Kafka;
+
+namespace N5.Infraestructure.Repositories;
 public class KafkaRepository : IKafkaRepository
 {
     private readonly InfraestructureSettings _settings;
@@ -8,7 +11,7 @@ public class KafkaRepository : IKafkaRepository
     }
 
     public async Task SendMessageToTopic(string topic, string message)
-    {
+    {        
         await KafkaProducerBase.Produce(topic, message, _settings.KafkaSettings.BrokerList);
     }
 }
