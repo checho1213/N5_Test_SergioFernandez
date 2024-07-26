@@ -1,5 +1,8 @@
+using Azure;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using N5.Domain.Entities;
+using N5.Domain.Exceptions;
 using N5.WebApi.Application.Commands.Permissions;
 using N5.WebApi.dto;
 
@@ -18,16 +21,50 @@ public class PermissionController : ControllerBase
         this._mediator = mediator;
     }
 
-    [HttpPost(Name = "CreatePermission")]
-    public async Task<ActionResult> CreatePermission([FromBody] PermissionDto permission)
+    [HttpPost("RequestPermission")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> CreatePermission([FromBody] CreateRequestPermissionDto permission)
     {
-        return StatusCode(StatusCodes.Status201Created, await _mediator.Send(new CreatePermissionCommand
+        var response = await _mediator.Send(new CreatePermissionCommand
         {
             EmployeeName = permission.EmployeeName,
             EmployeeSurname = permission.LastName,
             PermissionDate = permission.Date,
             PermissionType = permission.TypePermissionId
-        }));
+        });
+        return await HomologateResponse(response);
+    }
 
+    [HttpPost("ModifyPermission")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> ModifyPermission([FromBody] UpdateRequestPermissionDto permission)
+    {
+        var response = await _mediator.Send(new UpdatePermissionCommand
+        {
+            IdPermission = permission.IdPermission,
+            PermissionDate = permission.Date,
+            PermissionType = permission.TypePermissionId
+        });
+        return await HomologateResponse(response);
+
+    }
+
+    private async Task<ActionResult> HomologateResponse(ResponseMessageDto<Permission> response)
+    {
+        switch (response.StatusCode)
+        {
+            case StatusCodes.Status200OK:
+            default:
+                return Ok(response);
+            case StatusCodes.Status500InternalServerError:
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            case StatusCodes.Status400BadRequest:
+                return BadRequest(response);
+
+        }
     }
 }

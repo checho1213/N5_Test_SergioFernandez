@@ -1,6 +1,6 @@
 ﻿namespace N5.WebApi.dto
 {
-    public class PermissionDto
+    public class CreateRequestPermissionDto
     {        
         public string EmployeeName { get; set; }
         public string LastName { get; set; }

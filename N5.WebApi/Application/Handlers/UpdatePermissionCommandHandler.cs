@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using N5.Domain.Entities;
 using N5.Domain.Exceptions;
@@ -12,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace N5.WebApi.Application.Handlers;
 
-public class CreatePermissionCommandHandler : IRequestHandler<CreatePermissionCommand, ResponseMessageDto<Permission>>
+public class UpdatePermissionCommandHandler : IRequestHandler<UpdatePermissionCommand, ResponseMessageDto<Permission>>
 {
     #region privateMembers 
     private readonly IUnitofWork _unitofWork;
@@ -21,8 +20,7 @@ public class CreatePermissionCommandHandler : IRequestHandler<CreatePermissionCo
     private readonly IPermissionDomainServices _permissionDomainServices;
     #endregion
 
-    public CreatePermissionCommandHandler(IUnitofWork unitOfWork, IKafkaRepository kafkaRepository, IOptions<InfraestructureSettings> infraSettings
-        , IPermissionDomainServices permissionDomainServices)
+    public UpdatePermissionCommandHandler(IUnitofWork unitOfWork, IKafkaRepository kafkaRepository, IOptions<InfraestructureSettings> infraSettings, IPermissionDomainServices permissionDomainServices)
     {
         _unitofWork = unitOfWork;
         _kafkaRepository = kafkaRepository;
@@ -30,26 +28,30 @@ public class CreatePermissionCommandHandler : IRequestHandler<CreatePermissionCo
         _permissionDomainServices = permissionDomainServices;
     }
 
-    public async Task<ResponseMessageDto<Permission>> Handle(CreatePermissionCommand request, CancellationToken cancellationToken)
+    public async Task<ResponseMessageDto<Permission>> Handle(UpdatePermissionCommand request, CancellationToken cancellationToken)
     {
-        ResponseMessageDto<Permission> response = new ResponseMessageDto<Permission>();
         int statusCode = StatusCodes.Status500InternalServerError;
         try
         {
+            Domain.Entities.Permission permiso;
+            permiso = _unitofWork.PermisosRepository.GetById(request.IdPermission);
+            if (permiso == null)
+            {
+                statusCode = StatusCodes.Status404NotFound;
+                return BuildMessage(statusCode, null, "El permiso enviado no existe");
+            }
             var resultValidation = _permissionDomainServices.ValidateDatePermission(request.PermissionDate);
             if (!resultValidation)
             {
                 statusCode = StatusCodes.Status400BadRequest;
                 throw new DomainExceptions("La fecha no valida.", new Exception("La fecha del permiso no puede ser inferior a la fecha actual."));
             }
-            Domain.Entities.Permission permiso = new Domain.Entities.Permission();
-            permiso.EmployeeName = request.EmployeeName;
-            permiso.LastName = request.EmployeeSurname;
+
             permiso.Date = DateOnly.FromDateTime(request.PermissionDate);
             permiso.PemissionTypeId = request.PermissionType;
-            _unitofWork.PermisosRepository.Add(permiso);
+            _unitofWork.PermisosRepository.Update(permiso);
             await SendMessageToPermissionEventsTopic(permiso);
-            return BuildMessage(StatusCodes.Status201Created, permiso, "Permiso creado con exito");
+            return BuildMessage(StatusCodes.Status200OK, permiso, "Permiso actualizado con exito");
         }
         catch (Exception ex)
         {
@@ -60,7 +62,7 @@ public class CreatePermissionCommandHandler : IRequestHandler<CreatePermissionCo
     private async Task SendMessageToPermissionEventsTopic(Permission permission)
     {
         PermissionEnventDto message = new PermissionEnventDto();
-        message.Operation = "Create";
+        message.Operation = "Modify";
         message.Message = JsonConvert.SerializeObject(permission);
         message.Id = Guid.NewGuid();
         await _kafkaRepository.SendMessageToTopic(permissionEventTopic, JsonConvert.SerializeObject(message));
@@ -75,4 +77,5 @@ public class CreatePermissionCommandHandler : IRequestHandler<CreatePermissionCo
         response.ErrorMessage = message;
         return response;
     }
+
 }

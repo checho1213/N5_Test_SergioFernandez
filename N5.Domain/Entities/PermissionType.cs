@@ -2,13 +2,13 @@
 
 namespace N5.Domain.Entities
 {
-    public class TiposPermisos
+    public class PermissionType
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
         [StringLength(300)]
-        public string Descripcion { get; set; }
+        public string Description { get; set; }
     }
 }

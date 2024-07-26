@@ -12,54 +12,54 @@ namespace N5.Infraestructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "TiposPermisos",
+                name: "PermissionTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Descripcion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TiposPermisos", x => x.Id);
+                    table.PrimaryKey("PK_PermissionTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Permisos",
+                name: "Permissions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreEmpleado = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    ApellidoEmpleado = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    FechaPermiso = table.Column<DateOnly>(type: "date", nullable: false),
-                    TiposPermisoId = table.Column<int>(type: "int", nullable: false)
+                    EmployeeName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    PemissionTypeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permisos", x => x.Id);
+                    table.PrimaryKey("PK_Permissions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Permisos_TiposPermisos_TiposPermisoId",
-                        column: x => x.TiposPermisoId,
-                        principalTable: "TiposPermisos",
+                        name: "FK_Permissions_PermissionTypes_PemissionTypeId",
+                        column: x => x.PemissionTypeId,
+                        principalTable: "PermissionTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permisos_TiposPermisoId",
-                table: "Permisos",
-                column: "TiposPermisoId");
+                name: "IX_Permissions_PemissionTypeId",
+                table: "Permissions",
+                column: "PemissionTypeId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Permisos");
+                name: "Permissions");
 
             migrationBuilder.DropTable(
-                name: "TiposPermisos");
+                name: "PermissionTypes");
         }
     }
 }

@@ -4,12 +4,10 @@ using N5.WebApi.dto;
 
 namespace N5.WebApi.Application.Commands.Permissions
 {
-    public class CreatePermissionCommand : IRequest<ResponseMessageDto<Permission>>
+    public class UpdatePermissionCommand : IRequest<ResponseMessageDto<Permission>>
     {
-        public string EmployeeName { get; set; }
-        public string EmployeeSurname { get; set; }
+        public int IdPermission { get; set; }
         public DateTime PermissionDate { get; set; }
         public int PermissionType { get; set; }
     }
-
 }

@@ -5,6 +5,8 @@ using N5.Infraestructure.Repositories;
 using MediatR;
 using System.Reflection;
 using N5.Infraestructure.Settings;
+using N5.Domain.Interfaces;
+using N5.Domain.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +22,7 @@ builder.Services.AddDbContext<N5Context>(options =>
 });
 builder.Services.AddTransient<IUnitofWork, UnitOfWork>();
 builder.Services.AddTransient<IKafkaRepository,KafkaRepository>();
+builder.Services.AddTransient<IPermissionDomainServices,PermissionDomainServices>();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 var app = builder.Build();
 

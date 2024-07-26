@@ -32,4 +32,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         context.Set<T>().Remove(entity);
     }
+
+    public void Update(T entity)
+    {
+        context.Attach(entity);
+        context.SaveChanges();
+    }
 }

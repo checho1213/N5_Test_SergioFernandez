@@ -5,6 +5,6 @@ public class N5Context : DbContext
     {
         
     }
-    public DbSet<Permisos>Permisos { get; set; }
-    public DbSet<TiposPermisos> TiposPermisos { get; set; }
+    public DbSet<Permission>Permissions { get; set; }
+    public DbSet<PermissionType> PermissionTypes { get; set; }
 }

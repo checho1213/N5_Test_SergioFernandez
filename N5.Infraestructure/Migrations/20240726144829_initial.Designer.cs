@@ -12,7 +12,7 @@ using N5.Infraestructure.context;
 namespace N5.Infraestructure.Migrations
 {
     [DbContext(typeof(N5Context))]
-    [Migration("20240722152658_initial")]
+    [Migration("20240726144829_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace N5.Infraestructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("N5.Domain.Entities.Permisos", b =>
+            modelBuilder.Entity("N5.Domain.Entities.Permission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,30 +33,30 @@ namespace N5.Infraestructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApellidoEmpleado")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<DateOnly>("FechaPermiso")
+                    b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<string>("NombreEmpleado")
+                    b.Property<string>("EmployeeName")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<int>("TiposPermisoId")
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("PemissionTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TiposPermisoId");
+                    b.HasIndex("PemissionTypeId");
 
-                    b.ToTable("Permisos");
+                    b.ToTable("Permissions");
                 });
 
-            modelBuilder.Entity("N5.Domain.Entities.TiposPermisos", b =>
+            modelBuilder.Entity("N5.Domain.Entities.PermissionType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,25 +64,25 @@ namespace N5.Infraestructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Descripcion")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TiposPermisos");
+                    b.ToTable("PermissionTypes");
                 });
 
-            modelBuilder.Entity("N5.Domain.Entities.Permisos", b =>
+            modelBuilder.Entity("N5.Domain.Entities.Permission", b =>
                 {
-                    b.HasOne("N5.Domain.Entities.TiposPermisos", "TiposPermiso")
+                    b.HasOne("N5.Domain.Entities.PermissionType", "PemissionType")
                         .WithMany()
-                        .HasForeignKey("TiposPermisoId")
+                        .HasForeignKey("PemissionTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TiposPermiso");
+                    b.Navigation("PemissionType");
                 });
 #pragma warning restore 612, 618
         }
