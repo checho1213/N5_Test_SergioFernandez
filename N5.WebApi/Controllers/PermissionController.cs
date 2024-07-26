@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using N5.Domain.Entities;
 using N5.Domain.Exceptions;
 using N5.WebApi.Application.Commands.Permissions;
+using N5.WebApi.Application.Handlers;
+using N5.WebApi.Application.Queries;
 using N5.WebApi.dto;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace N5.WebApi.Controllers;
 
@@ -53,6 +56,17 @@ public class PermissionController : ControllerBase
 
     }
 
+
+    [HttpPost("GetPermissions")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> GetPermission()
+    {
+        GetPermissionsQuery query = new GetPermissionsQuery();
+        var response = await _mediator.Send(query);
+        return Ok(response);
+    }
+
     private async Task<ActionResult> HomologateResponse(ResponseMessageDto<Permission> response)
     {
         switch (response.StatusCode)
@@ -64,7 +78,6 @@ public class PermissionController : ControllerBase
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             case StatusCodes.Status400BadRequest:
                 return BadRequest(response);
-
         }
     }
 }
